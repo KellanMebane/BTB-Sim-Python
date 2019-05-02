@@ -1,8 +1,12 @@
+# using Li_int and Doduc_FP
+
+
 class Entry:
-    def __init__(self, pc, target):
-        self.state = 3
+    def __init__(self, pc, target, mode):
+        self.state = 2 if mode else 3  # deciding which state machine is used
         self.pc = pc
         self.target = target
+        self.mode = mode
 
     def match_target(self, newTarget):
         return self.target == newTarget
@@ -16,7 +20,8 @@ class Entry:
     def right(self):
         if self.state < 3:
             if self.state == 1:
-                self.state = 2
+                # self.state = 2
+                self.state = 3 if self.mode else 2  # follow desired state behavior
             else:
                 self.state += 1
 
@@ -39,7 +44,7 @@ def is_branch(pc, target):
 
 
 class BTB:
-    def __init__(self):
+    def __init__(self, mode):
         self.branches = [None] * 1024  # BTB itself
         # holds a list of all branches (even overwritten branches)
         self.just_branches = []
@@ -51,6 +56,7 @@ class BTB:
         self.wrong_address = 0
         self.instructions = 1
         self.taken = 0
+        self.mode = mode
 
     def does_entry_exist(self, pc):
         if self.branches[calculate_index(pc)] is None:
@@ -116,7 +122,7 @@ class BTB:
                     if is_branch(pc, target):
                         self.wrong_address += 1
                         # update BTB because wrong address
-                        self.branches[index] = Entry(pc, target)
+                        self.branches[index] = Entry(pc, target, self.mode)
             # prediction says not taken
             else:
                 if is_taken:
@@ -134,7 +140,8 @@ class BTB:
                 # already exists but wrong PC
                 if self.branches[index] is not None:
                     self.collisions += 1
-                self.branches[index] = Entry(pc, target)  # enter into BTB
+                self.branches[index] = Entry(
+                    pc, target, self.mode)  # enter into BTB
 
     def format_info(self):
         x = "Number of hits: %d\nNumber of misses: %d\nNumber of right: %d\nNumber of wrong: %d\n" % (
@@ -149,16 +156,67 @@ class BTB:
             (self.wrong + self.misses + self.instructions) / self.instructions)
         return x
 
+
 def main():
-    btb = BTB()
+    btb = BTB(True)  # true means State Machine B
     btb.run_on_file('sample.txt')
-    out = open('state_machine_class.txt', 'w')
+    out = open('res/sample_B.txt', 'w')
     out.write("%s" % (btb.format_info()))
     out.write("\n\nEntry    PC  Target  Prediction\n")
     for entry in btb.branches:
         if entry is not None:
             out.write("%s\n" % (entry.format_entry()))
-    # btb.print_branches()
+    out.close()
+
+    btb = BTB(False)  # false means State Machine Class
+    btb.run_on_file('sample.txt')
+    out = open('res/sample_C.txt', 'w')
+    out.write("%s" % (btb.format_info()))
+    out.write("\n\nEntry    PC  Target  Prediction\n")
+    for entry in btb.branches:
+        if entry is not None:
+            out.write("%s\n" % (entry.format_entry()))
+    out.close()
+
+    btb = BTB(True)  # true means State Machine B
+    btb.run_on_file('Doduc_FP.txt')
+    out = open('res/Doduc_B.txt', 'w')
+    out.write("%s" % (btb.format_info()))
+    out.write("\n\nEntry    PC  Target  Prediction\n")
+    for entry in btb.branches:
+        if entry is not None:
+            out.write("%s\n" % (entry.format_entry()))
+    out.close()
+
+    btb = BTB(False)  # false means State Machine Class
+    btb.run_on_file('Doduc_FP.txt')
+    out = open('res/Doduc_C.txt', 'w')
+    out.write("%s" % (btb.format_info()))
+    out.write("\n\nEntry    PC  Target  Prediction\n")
+    for entry in btb.branches:
+        if entry is not None:
+            out.write("%s\n" % (entry.format_entry()))
+    out.close()
+
+    btb = BTB(True)  # true means State Machine B
+    btb.run_on_file('Li_int.txt')
+    out = open('res/Li_B.txt', 'w')
+    out.write("%s" % (btb.format_info()))
+    out.write("\n\nEntry    PC  Target  Prediction\n")
+    for entry in btb.branches:
+        if entry is not None:
+            out.write("%s\n" % (entry.format_entry()))
+    out.close()
+
+    btb = BTB(False)  # false means State Machine Class
+    btb.run_on_file('Li_int.txt')
+    out = open('res/Li_C.txt', 'w')
+    out.write("%s" % (btb.format_info()))
+    out.write("\n\nEntry    PC  Target  Prediction\n")
+    for entry in btb.branches:
+        if entry is not None:
+            out.write("%s\n" % (entry.format_entry()))
+    out.close()
 
 
 if __name__ == "__main__":
