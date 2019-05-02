@@ -1,6 +1,6 @@
 # using Li_int and Doduc_FP
 
-
+# Each Prediction is self contained
 class Entry:
     def __init__(self, pc, target, mode):
         self.state = 2 if mode else 3  # deciding which state machine is used
@@ -21,13 +21,16 @@ class Entry:
         if self.state < 3:
             if self.state == 1:
                 # self.state = 2
-                self.state = 3 if self.mode else 2  # follow desired state behavior
+                self.state = 3 # follow desired state behavior
             else:
                 self.state += 1
 
     def wrong(self):
         if self.state > 0:
-            self.state -= 1
+            if self.state == 2 and self.mode == False:
+                self.state = 0
+            else:
+                self.state -= 1
 
     def format_entry(self):
         return '%d  %x  %x  %s' % (
@@ -42,7 +45,7 @@ def calculate_index(pc):
 def is_branch(pc, target):
     return (pc + 4) != target
 
-
+# BTB contains stats and an array of entries
 class BTB:
     def __init__(self, mode):
         self.branches = [None] * 1024  # BTB itself

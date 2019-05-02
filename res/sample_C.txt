@@ -1,14 +1,14 @@
 Number of hits: 2049
 Number of misses: 167
-Number of right: 1893
-Number of wrong: 156
+Number of right: 1895
+Number of wrong: 154
 Wrong predicted adr: 85
 Number of collisions/conflicts: 6
 Hit rate: 92.463899%
-Accuracy: 92.386530%
+Accuracy: 92.484139%
 Wrong address prediction: 4.148365%
 CPI with no BTB: 1.189797
-CPI with BTB: 1.028958
+CPI with BTB: 1.028779
 
 Entry    PC  Target  Prediction
 0  423000  425e40  11
@@ -152,16 +152,16 @@ Entry    PC  Target  Prediction
 839  42ad1c  42ad2c  11
 840  400d20  400cec  10
 843  400d2c  400200  11
-846  42ad38  420300  1
+846  42ad38  420300  0
 847  42ad3c  420350  11
 856  400d60  400d2c  10
 859  400d6c  400200  11
 872  400da0  400d6c  10
 875  400dac  400200  11
 888  400de0  400dac  11
-919  425e5c  425ea4  1
+919  425e5c  425ea4  0
 923  425e6c  425e7c  11
-930  425e88  425e90  0
+930  425e88  425e90  11
 936  425ea0  425e60  10
 939  425eac  425f88  11
 948  425ed0  42b2f0  11
